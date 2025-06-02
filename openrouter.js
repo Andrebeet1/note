@@ -8,16 +8,16 @@ try {
 const response = await axios.post(
 'https://openrouter.ai/api/v1/chat/completions',
 {
-model: 'openai/gpt-3.5-turbo',
-messages: [{ role: 'user', content: prompt }],
+model: "openai/gpt-3.5-turbo", // ou un autre modèle supporté par OpenRouter
+messages: [{ role: "user", content: prompt }],
 max_tokens: 2000
 },
 {
 headers: {
-'Authorization': Bearer ${process.env.OPENROUTER_API_KEY},
-'Content-Type': 'application/json',
-'HTTP-Referer': 'https://note.onrender.com',
-'X-Title': 'Notes spirituelles'
+"Authorization": Bearer ${process.env.OPENROUTER_API_KEY},
+"Content-Type": "application/json",
+"HTTP-Referer": "https://note-ohr8.onrender.com", // facultatif mais parfois requis
+"X-Title": "Générateur de notes spirituelles" // facultatif
 }
 }
 );
@@ -28,24 +28,17 @@ Edit
 if (
   response.data &&
   response.data.choices &&
-  response.data.choices.length > 0
+  response.data.choices.length > 0 &&
+  response.data.choices[0].message &&
+  response.data.choices[0].message.content
 ) {
   return response.data.choices[0].message.content;
 } else {
-  console.error('Réponse inattendue d’OpenRouter:', response.data);
-  return 'Impossible de générer les notes pour le moment.';
+  return "Réponse vide ou inattendue reçue de l'API OpenRouter.";
 }
 } catch (error) {
-if (error.response) {
-console.error(
-'Erreur OpenRouter:',
-error.response.status,
-error.response.data
-);
-} else {
-console.error('Erreur inconnue:', error.message);
-}
-return 'Impossible de générer les notes pour le moment.';
+console.error("Erreur avec OpenRouter:", error.response?.data || error.message);
+return "Impossible de générer les notes pour le moment.";
 }
 }
 
