@@ -1,20 +1,36 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Notes Spirituelles</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body class="bg-light p-4">
-  <div class="container text-center">
-    <h1 class="mb-4">🕊️ Notes Spirituelles Quotidiennes</h1>
-    <button id="generateBtn" class="btn btn-primary mb-4">Régénérer les notes</button>
-    <div id="notesContainer" class="row g-4"></div>
-  </div>
+<!DOCTYPE html> 
+<html lang="fr"> 
+  <head> <meta charset="UTF-8"> 
+    <title>Notes Spirituelles</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Bootstrap --> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"> <!-- Animate.css --> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"> <!-- Styles personnalisés --> 
+    <link rel="stylesheet" href="css/styles.css"> <!-- Turn.js CSS personnalisé si nécessaire --> 
+    <style> 
+      #flipbook { width: 800px; height: 600px; margin: 0 auto; } 
+      #flipbook .page { width: 400px; height: 600px; 
+                       background: white; 
+                       padding: 20px; 
+                       border: 1px solid #ccc; 
+                       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
+                       overflow-y: auto; } 
+      @media (max-width: 768px) { 
+        #flipbook { width: 100%; height: auto; } 
+        #flipbook .page { width: 100%; height: auto; } }
+    </style> 
+  </head> 
+  <body class="bg-light p-4"> 
+    <div class="container text-center"> 
+      <h1 class="mb-4">📖 Notes Spirituelles Quotidiennes</h1> 
+      <button id="generateBtn" class="btn btn-primary mb-4">Régénérer les notes</button>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="js/main.js"></script>
-</body>
+<!-- Livre interactif -->
+<div id="flipbook" class="animate__animated animate__fadeIn"></div>
+</div> <!-- Scripts --> 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js">
+      
+    </script> <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js">
+      
+    </script><script src="js/main.js"></script> 
+  </body> 
 </html>
