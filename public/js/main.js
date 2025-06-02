@@ -1,5 +1,7 @@
 $(document).ready(function () {
-  // Fonction d’échappement HTML simple
+  let currentIndex = 0;
+  let totalNotes = 0;
+
   function escapeHtml(text) {
     return text.replace(/[&<>"']/g, function (match) {
       return {
@@ -12,6 +14,15 @@ $(document).ready(function () {
     });
   }
 
+  function updateNavigation() {
+    $("#supportNotes section").removeClass("active");
+    $("#supportNotes section").eq(currentIndex).addClass("active");
+
+    $("#pageIndicator").text(`Note ${currentIndex + 1}`);
+    $("#prevBtn").prop("disabled", currentIndex === 0);
+    $("#nextBtn").prop("disabled", currentIndex >= totalNotes - 1);
+  }
+
   function loadNotes() {
     $("#generateBtn")
       .prop("disabled", true)
@@ -19,76 +30,45 @@ $(document).ready(function () {
 
     $.get("/api/notes")
       .done(function (data) {
-        if (!data || !data.content || typeof data.content !== "string") {
-          $("#flipbook").html(`
-            <div class="alert alert-warning">
-              ⚠️ Aucune note disponible.
-            </div>
-          `);
-          return;
-        }
+        let raw = data.content || data;
+        const notes = raw.split(/\n\s*\n/); // sépare les notes par paragraphes
 
-        const notes = data.content.split(/\n\s*\n/); // séparation par double retour
-        let html = "";
+        totalNotes = notes.length;
+        currentIndex = 0;
 
-        // Générer les pages
-        notes.forEach((note, index) => {
-          html += `
-            <div class="page">
-              <h5 class="text-primary">Note ${index + 1}</h5>
-              <p style="white-space: pre-wrap;">${escapeHtml(note.trim())}</p>
-            </div>
-          `;
-        });
+        const html = notes.map((note, i) => `
+          <section class="${i === 0 ? 'active' : ''}">
+            <h5 class="text-primary">Note ${i + 1}</h5>
+            <p style="white-space: pre-wrap;">${escapeHtml(note.trim())}</p>
+          </section>
+        `).join("");
 
-        const $flipbook = $("#flipbook");
-
-        // Nettoyage de l'ancien flipbook
-        if ($flipbook.data("turn")) {
-          $flipbook.turn("destroy").removeClass("turnjs");
-        }
-
-        // Insertion du contenu HTML
-        $flipbook.html(html);
-
-        // Initialiser turn.js
-        $flipbook.turn({
-          width: 800,
-          height: 600,
-          autoCenter: true,
-          elevation: 50,
-          gradients: true,
-          when: {
-            turning: function (event, page, view) {
-              console.log("Page tournante vers :", page);
-            }
-          }
-        });
+        $("#supportNotes").html(html);
+        updateNavigation();
       })
-      .fail(function (err) {
-        $("#flipbook").html(`
-          <div class="alert alert-danger">
-            ⚠️ Une erreur est survenue lors du chargement des notes.
-          </div>
-        `);
-        console.error("Erreur lors du chargement :", err);
+      .fail(function () {
+        $("#supportNotes").html(`<div class="alert alert-danger">⚠️ Impossible de charger les notes.</div>`);
       })
       .always(function () {
-        $("#generateBtn")
-          .prop("disabled", false)
-          .html("Régénérer les notes");
+        $("#generateBtn").prop("disabled", false).html("Régénérer les notes");
       });
   }
 
-  // Chargement initial
-  loadNotes();
-
-  // Rechargement sur clic
-  $("#generateBtn").click(function () {
-    const $flipbook = $("#flipbook");
-    if ($flipbook.data("turn")) {
-      $flipbook.turn("destroy").removeClass("turnjs");
+  $("#prevBtn").click(() => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateNavigation();
     }
-    loadNotes();
   });
+
+  $("#nextBtn").click(() => {
+    if (currentIndex < totalNotes - 1) {
+      currentIndex++;
+      updateNavigation();
+    }
+  });
+
+  $("#generateBtn").click(() => loadNotes());
+
+  loadNotes();
 });
