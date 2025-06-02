@@ -31,17 +31,31 @@ $(document).ready(function () {
     $.get("/api/notes")
       .done(function (data) {
         let raw = data.content || data;
-        const notes = raw.split(/\n\s*\n/); // sépare les notes par paragraphes
+        const notes = raw.split(/\n\s*\n/); // Sépare les notes par paragraphes
 
         totalNotes = notes.length;
         currentIndex = 0;
 
-        const html = notes.map((note, i) => `
-          <section class="${i === 0 ? 'active' : ''}">
-            <h5 class="text-primary">Note ${i + 1}</h5>
-            <p style="white-space: pre-wrap;">${escapeHtml(note.trim())}</p>
-          </section>
-        `).join("");
+        const html = notes.map((note, i) => {
+          const lines = note.trim().split('\n');
+          const verseLine = lines[0] || "";
+          const prayerLine = lines.slice(1).join("<br>");
+
+          return `
+            <section class="${i === 0 ? 'active' : ''}">
+              <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                  <h5 class="text-primary mb-3">📖 Note ${i + 1}</h5>
+                  <blockquote class="blockquote ps-3 border-start border-primary">
+                    <p class="mb-1 text-dark" style="font-size: 1.1rem;"><em>${escapeHtml(verseLine)}</em></p>
+                  </blockquote>
+                  <hr>
+                  <p class="text-secondary fst-italic">🕊️ ${escapeHtml(prayerLine)}</p>
+                </div>
+              </div>
+            </section>
+          `;
+        }).join("");
 
         $("#supportNotes").html(html);
         updateNavigation();
