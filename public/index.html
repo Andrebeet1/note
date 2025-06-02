@@ -14,6 +14,7 @@
   <!-- Styles personnalisés -->
   <link rel="stylesheet" href="css/styles.css">
 
+  <!-- Style interne complémentaire -->
   <style>
     #supportNotes section {
       display: none;
@@ -30,20 +31,24 @@
     }
   </style>
 </head>
-<body class="bg-light p-4">
+<body class="bg-light">
 
-  <div class="container text-center">
-    <h1 class="mb-4">📖 Notes Spirituelles Quotidiennes</h1>
-    <button id="generateBtn" class="btn btn-primary mb-4">Régénérer les notes</button>
+  <div class="container py-4">
+    <header class="text-center mb-4">
+      <h1 class="mb-3">📖 Notes Spirituelles Quotidiennes</h1>
+      <button id="generateBtn" class="btn btn-primary">
+        Régénérer les notes
+      </button>
+    </header>
 
-    <!-- Boutons de navigation -->
+    <!-- Navigation -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <button id="prevBtn" class="btn btn-outline-secondary">⬅️ Précédent</button>
-      <span id="pageIndicator" class="fw-bold">Note 1</span>
+      <span id="pageIndicator" class="fw-semibold">Note 1</span>
       <button id="nextBtn" class="btn btn-outline-secondary">Suivant ➡️</button>
     </div>
 
-    <!-- Conteneur des notes (chaque note est un <section>) -->
+    <!-- Notes dynamiques -->
     <div id="supportNotes" class="animate__animated animate__fadeIn"></div>
   </div>
 
@@ -52,5 +57,3 @@
   <script src="js/main.js" defer></script>
 </body>
 </html>
-
- 
