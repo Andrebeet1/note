@@ -19,7 +19,16 @@ $(document).ready(function () {
 
     $.get("/api/notes")
       .done(function (data) {
-        const notes = data.split(/\n\s*\n/); // séparation par double retour
+        if (!data || !data.content || typeof data.content !== "string") {
+          $("#flipbook").html(`
+            <div class="alert alert-warning">
+              ⚠️ Aucune note disponible.
+            </div>
+          `);
+          return;
+        }
+
+        const notes = data.content.split(/\n\s*\n/); // séparation par double retour
         let html = "";
 
         // Générer les pages
@@ -34,11 +43,12 @@ $(document).ready(function () {
 
         const $flipbook = $("#flipbook");
 
-        // Nettoyage si déjà existant
+        // Nettoyage de l'ancien flipbook
         if ($flipbook.data("turn")) {
           $flipbook.turn("destroy").removeClass("turnjs");
         }
 
+        // Insertion du contenu HTML
         $flipbook.html(html);
 
         // Initialiser turn.js
@@ -73,7 +83,7 @@ $(document).ready(function () {
   // Chargement initial
   loadNotes();
 
-  // Rechargement
+  // Rechargement sur clic
   $("#generateBtn").click(function () {
     const $flipbook = $("#flipbook");
     if ($flipbook.data("turn")) {
