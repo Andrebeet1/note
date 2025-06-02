@@ -6,7 +6,7 @@ const prompt = `Génère 20 notes spirituelles chrétiennes inspirantes, courtes
 async function generateNotes() {
   try {
     const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
+      'https://openrouter.ai/api/v1',
       {
         model: "openai/gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
