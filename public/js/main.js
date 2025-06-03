@@ -41,15 +41,18 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split('\n');
           const verseLine = lines[0] || "";
-          const prayerLine = lines.slice(1).join("<br>");
+          const prayerLines = lines.slice(1);
+          const prayerLine = prayerLines.length
+            ? `Inspiré par ce verset, prions :<br>${prayerLines.join("<br>")}`
+            : "";
 
           return `
             <section class="${i === 0 ? 'active animate__fadeIn' : ''}">
               <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
                 <div class="card-body">
                   <h5 class="text-primary mb-3">📖 Note ${i + 1}</h5>
-                  <blockquote class="blockquote ps-3 border-start border-primary">
-                    <p class="mb-1 text-dark" style="font-size: 1.1rem;"><em>${escapeHtml(verseLine)}</em></p>
+                  <blockquote class="blockquote ps-3 border-start border-primary fst-italic" style="font-size: 1.1rem; color: #333;">
+                    "${escapeHtml(verseLine)}"
                   </blockquote>
                   <hr>
                   <p class="text-secondary fst-italic">🕊️ ${escapeHtml(prayerLine)}</p>
