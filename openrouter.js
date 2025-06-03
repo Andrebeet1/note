@@ -1,19 +1,29 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const prompt = `Génère 20 notes chrétiennes inspirantes dans ce format strict :
+const prompt = `
+Génère 20 notes chrétiennes inspirantes, chacune respectant strictement le format suivant :
 
-🌿 1. Verset + Prière : [Thème inspirant ou mot-clé]
+🌿 [numéro]. Verset + Prière : [Thème inspirant ou mot-clé]
 
 📖 Verset du jour  
-> "[Texte du verset]" — Référence biblique
+[Texte exact du verset] — [Référence biblique]
 
-🙏 Prière : [Une prière simple de l' inspirée du verset]
+🙏 Prière :  
+[Une prière développée, sincère et profondément inspirée par le verset, suffisamment riche pour nourrir la méditation]
 
-Respecte exactement ce format pour chaque note.  
-Ne donne aucun autre texte que ce qui est demandé.  
-N’ajoute ni introduction, ni résumé, ni numérotation globale, ni séparation décorative.  
-Sépare chaque note par deux sauts de ligne (\\n\\n).`;
+💬 Citation :  
+[Une citation inspirante en lien avec le thème, sans mention d’auteur]
+
+Consignes impératives :  
+- Respecte précisément ce format pour chaque note, sans aucune variation.  
+- Ne fournis aucun contenu supplémentaire : pas d’introduction, de résumé ou de séparateur.  
+- Numérote les notes de 1 à 20 dans la ligne "🌿 [numéro]. Verset + Prière :".  
+- Sépare chaque note par exactement deux retours à la ligne (\\n\\n).  
+- Veille à ce que la prière soit complète et suffisamment longue pour inspirer.
+
+Merci de suivre ces instructions à la lettre.
+`;
 
 async function generateNotes() {
   try {
@@ -35,14 +45,9 @@ async function generateNotes() {
       }
     );
 
-    if (
-      response.data &&
-      response.data.choices &&
-      response.data.choices[0] &&
-      response.data.choices[0].message &&
-      response.data.choices[0].message.content
-    ) {
-      return response.data.choices[0].message.content.trim();
+    const messageContent = response?.data?.choices?.[0]?.message?.content;
+    if (messageContent) {
+      return messageContent.trim();
     } else {
       return "Réponse vide ou inattendue de l'API.";
     }
