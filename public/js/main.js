@@ -39,40 +39,40 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          // Ligne 0 : thème (ex: 🌿 1. Verset + Prière : Thème)
           const themeLine = escapeHtml(lines[0] || "🌿 Verset + Prière");
-
-          // Ligne 1 : label du verset (ex: 📖 Verset du jour)
           const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
-
-          // Ligne 2 : verset avec > en début
           const verseLine = escapeHtml((lines[2] || "").replace(/^>\s*/, ""));
 
-          // Recherche ligne de prière (qui commence par "🙏")
           const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
-          const prayerLabelLine = prayerIndex >= 0 ? lines[prayerIndex] : "";
-          const prayerLine = escapeHtml(prayerLabelLine.replace(/^🙏\s*Prière\s*:\s*/i, ""));
+          const citationIndex = lines.findIndex(l => l.trim().startsWith("💬"));
 
-          // Méditation : toutes les lignes entre le verset et la prière (exclues)
+          const prayerLabel = prayerIndex >= 0 ? lines[prayerIndex] : "";
+          const prayerText = escapeHtml(prayerLabel.replace(/^🙏\s*Prière\s*:\s*/i, ""));
+
           const meditationLines = prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
           const meditation = escapeHtml(meditationLines.join(" ").trim());
+
+          const citationLine = citationIndex >= 0 ? lines[citationIndex].replace(/^💬\s*Citation\s*:\s*/i, "") : "";
+          const citation = escapeHtml(citationLine);
 
           return `
             <section class="${i === 0 ? "active animate__fadeIn" : ""}">
               <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
                 <div class="card-body">
-                  <h5 class="text-success mb-2">${themeLine}</h5>
+                  <h5 class="text-success mb-3">${themeLine}</h5>
 
                   <p class="fw-semibold text-muted mb-1">${verseLabel}</p>
                   <blockquote class="blockquote ps-3 border-start border-success">
                     <p class="mb-0 fst-italic">"${verseLine}"</p>
                   </blockquote>
 
+                  ${meditation ? `<p class="mt-3 text-dark">${meditation}</p>` : ""}
+
                   <hr>
 
-                  <p class="mb-2 text-dark">${meditation}</p>
+                  <p class="text-secondary"><strong>🙏 Prière :</strong> ${prayerText}</p>
 
-                  <p class="mt-3 text-secondary"><strong>🙏 Prière :</strong> ${prayerLine}</p>
+                  ${citation ? `<div class="mt-4 text-primary"><em>💬 "${citation}"</em></div>` : ""}
                 </div>
               </div>
             </section>
