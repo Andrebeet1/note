@@ -37,18 +37,27 @@ $(document).ready(function () {
         currentIndex = 0;
 
         const html = notes.map((note, i) => {
-          const lines = note.trim().split("\n");
-          const verseLine = escapeHtml(lines[0] || "");
-          const meditation = escapeHtml(lines.slice(1, -1).join(" ").trim());
-          const prayerLine = escapeHtml(lines[lines.length - 1] || "");
+          const lines = note.trim().split("\n").filter(Boolean);
+
+          // Traitement du format attendu
+          const themeLine = escapeHtml(lines[0] || "🌿 Verset + Prière");
+          const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
+          const verseLine = escapeHtml((lines[2] || "").replace(/^>\s*/, ''));
+          const prayerLabelLine = lines.find(l => l.trim().startsWith("🙏")) || "";
+          const prayerLine = escapeHtml(prayerLabelLine.replace(/^🙏\s*Prière\s*:\s*/i, ''));
+
+          // Récupération de la méditation (entre le verset et la prière)
+          const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
+          const meditationLines = lines.slice(3, prayerIndex > 3 ? prayerIndex : lines.length - 1);
+          const meditation = escapeHtml(meditationLines.join(" ").trim());
 
           return `
             <section class="${i === 0 ? 'active animate__fadeIn' : ''}">
               <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
                 <div class="card-body">
-                  <h5 class="text-success mb-2">🌿 ${i + 1}. Verset + Prière</h5>
+                  <h5 class="text-success mb-2">${themeLine}</h5>
 
-                  <p class="fw-semibold text-muted mb-1">📖 Verset du jour</p>
+                  <p class="fw-semibold text-muted mb-1">${verseLabel}</p>
                   <blockquote class="blockquote ps-3 border-start border-success">
                     <p class="mb-0 fst-italic">"${verseLine}"</p>
                   </blockquote>
