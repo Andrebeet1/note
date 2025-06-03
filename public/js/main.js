@@ -1,72 +1,63 @@
-<!DOCTYPE html><html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>📖 Méditations quotidiennes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">  <!-- Bootstrap -->  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">  <!-- Animate.css -->  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">  <!-- Google Font -->  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">  <style>
-    body {
-      background: linear-gradient(120deg, #f9f9f9, #e0f7fa);
-      font-family: 'Quicksand', sans-serif;
-      color: #2c3e50;
-    }
+$(document).ready(function () { let currentIndex = 0; let totalNotes = 0;
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-    }
+function escapeHtml(text) { return text.replace(/[&<>"']/g, function (match) { return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[match]; }); }
 
-    #supportNotes section {
-      display: none;
-      background: #ffffff;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.1);
-      transition: all 0.4s ease-in-out;
-    }
+function updateNavigation() { $("#supportNotes section").removeClass("active animate__fadeIn"); const currentSection = $("#supportNotes section").eq(currentIndex); currentSection.addClass("active animate__fadeIn");
 
-    #supportNotes section.active {
-      display: block;
-    }
+$("#pageIndicator").text(`Note ${currentIndex + 1} / ${totalNotes}`);
+$("#prevBtn").prop("disabled", currentIndex === 0);
+$("#nextBtn").prop("disabled", currentIndex >= totalNotes - 1);
 
-    .btn-custom {
-      background-color: #007bff;
-      border: none;
-      color: white;
-    }
+}
 
-    .btn-custom:hover {
-      background-color: #0056b3;
-    }
+function loadNotes() { $("#generateBtn") .prop("disabled", true) .html('<span class="spinner-border spinner-border-sm me-2"></span>Chargement...');
 
-    .card-body {
-      position: relative;
-    }
+$.get("/api/notes")
+  .done(function (data) {
+    const raw = data.content || data;
+    const notes = raw.split(/\n\s*\n/).filter(n => n.trim() !== "");
 
-    .action-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
+    totalNotes = notes.length;
+    currentIndex = 0;
 
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-    }
-  </style></head>
-<body><div class="container py-4">
-  <header class="text-center mb-4">
-    <h1 class="animate__animated animate__fadeInDown">📖 Méditations quotidiennes</h1>
-    <p class="text-muted">Laissez Dieu parler à votre cœur chaque jour.</p>
-    <button id="generateBtn" class="btn btn-custom mt-3">
-      🔄 Régénérer les notes
-    </button>
-  </header>  <!-- Navigation -->  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button id="prevBtn" class="btn btn-outline-secondary">⬅️ Précédent</button>
-    <span id="pageIndicator" class="fw-semibold">Note 1</span>
-    <button id="nextBtn" class="btn btn-outline-secondary">Suivant ➡️</button>
-  </div>  <!-- Zone de notes -->  <div id="supportNotes" class="animate__animated animate__fadeIn"></div>  <footer>
-    <p>&copy; 2025 - Méditations quotidiennes. Tous droits réservés.</p>
-  </footer>
-</div><!-- Scripts --><script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script src="js/main.js" defer></script></body>
-</html>
+    const html = notes.map((note, i) => {
+      const lines = note.trim().split('\n');
+      const verseLine = lines[0] || "";
+      const prayerLine = lines.slice(1).join("<br>");
+
+      return `
+        <section class="${i === 0 ? 'active animate__fadeIn' : ''}">
+          <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
+            <div class="card-body">
+              <h5 class="text-primary mb-3">📖 Note ${i + 1}</h5>
+              <blockquote class="blockquote ps-3 border-start border-primary">
+                <p class="mb-1 text-dark" style="font-size: 1.1rem;"><em>${escapeHtml(verseLine)}</em></p>
+              </blockquote>
+              <hr>
+              <p class="text-secondary fst-italic">🕊️ ${escapeHtml(prayerLine)}</p>
+            </div>
+          </div>
+        </section>
+      `;
+    }).join("");
+
+    $("#supportNotes").html(html);
+    updateNavigation();
+  })
+  .fail(function () {
+    $("#supportNotes").html(`<div class="alert alert-danger">⚠️ Impossible de charger les notes. Vérifiez votre connexion.</div>`);
+  })
+  .always(function () {
+    $("#generateBtn").prop("disabled", false).html("🔄 Régénérer les notes");
+  });
+
+}
+
+$("#prevBtn").click(() => { if (currentIndex > 0) { currentIndex--; updateNavigation(); } });
+
+$("#nextBtn").click(() => { if (currentIndex < totalNotes - 1) { currentIndex++; updateNavigation(); } });
+
+$("#generateBtn").click(() => loadNotes());
+
+loadNotes(); });
+
