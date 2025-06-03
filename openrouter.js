@@ -1,15 +1,16 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const prompt = `Génère 20 notes chrétiennes inspirantes. Pour chaque note, suis exactement ce format :
+const prompt = `Génère 20 notes chrétiennes inspirantes dans le format suivant :
 
-1. Commence par un **verset biblique** (1 ligne), comme une citation (ex : Jean 3:16 - "Car Dieu a tant aimé le monde...").
+🌿 1. Verset + Prière : [Thème inspirant ou mot-clé]
 
-2. Ensuite, saute une ligne puis écris une **méditation courte** de 3 à 5 lignes (maximum 80 mots).
+📖 Verset du jour  
+> "[Texte du verset]" — Référence biblique
 
-3. Ensuite, saute une ligne et écris une **prière simple d'une ou deux lignes**, en citant le verset ou son idée principale.
+🙏 Prière : [Une prière simple d'une à deux phrases inspirée du verset]
 
-Sépare chaque note par deux sauts de ligne (\n\n). N'utilise pas de titre ni de numérotation. N’ajoute rien d’autre.`;
+Respecte **strictement** ce format pour chaque note. Ne donne aucun autre texte que ce qui est demandé. N’ajoute ni introduction, ni résumé, ni numéro global, ni séparation décorative. Sépare chaque note par deux sauts de ligne (\\n\\n).`;
 
 async function generateNotes() {
   try {
@@ -18,7 +19,7 @@ async function generateNotes() {
       {
         model: "openai/gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 2000,
+        max_tokens: 4000,
         temperature: 1.0
       },
       {
