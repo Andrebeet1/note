@@ -39,40 +39,49 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          const themeLine = escapeHtml(lines[0] || "🌿 Verset + Prière");
+          const theme = escapeHtml(lines[0] || "🌿 Méditation du jour");
           const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
-          const verseLine = escapeHtml((lines[2] || "").replace(/^>\s*/, ""));
+          const verse = escapeHtml((lines[2] || "").replace(/^>\s*/, ""));
 
           const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.trim().startsWith("💬"));
 
-          const prayerLabel = prayerIndex >= 0 ? lines[prayerIndex] : "";
-          const prayerText = escapeHtml(prayerLabel.replace(/^🙏\s*Prière\s*:\s*/i, ""));
-
           const meditationLines = prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
           const meditation = escapeHtml(meditationLines.join(" ").trim());
 
-          const citationLine = citationIndex >= 0 ? lines[citationIndex].replace(/^💬\s*Citation\s*:\s*/i, "") : "";
-          const citation = escapeHtml(citationLine);
+          const prayerRaw = prayerIndex >= 0 ? lines[prayerIndex] : "";
+          const prayer = escapeHtml(prayerRaw.replace(/^🙏\s*Prière\s*:\s*/i, ""));
+
+          const citationRaw = citationIndex >= 0 ? lines[citationIndex] : "";
+          const citation = escapeHtml(citationRaw.replace(/^💬\s*Citation\s*:\s*/i, ""));
 
           return `
             <section class="${i === 0 ? "active animate__fadeIn" : ""}">
-              <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
+              <div class="card shadow border-0 mb-4 animate__animated animate__fadeInUp" style="border-radius: 1rem;">
                 <div class="card-body">
-                  <h5 class="text-success mb-3">${themeLine}</h5>
+                  <h5 class="text-success fw-semibold mb-3">${theme}</h5>
 
-                  <p class="fw-semibold text-muted mb-1">${verseLabel}</p>
+                  <p class="fw-medium text-muted mb-1">${verseLabel}</p>
                   <blockquote class="blockquote ps-3 border-start border-success">
-                    <p class="mb-0 fst-italic">"${verseLine}"</p>
+                    <p class="mb-0 fst-italic">"${verse}"</p>
                   </blockquote>
 
-                  ${meditation ? `<p class="mt-3 text-dark">${meditation}</p>` : ""}
+                  <hr class="my-3">
 
-                  <hr>
+                  ${meditation ? `<p class="text-dark lh-lg">${meditation}</p><hr class="my-3">` : ""}
 
-                  <p class="text-secondary"><strong>🙏 Prière :</strong> ${prayerText}</p>
+                  ${prayer ? `
+                    <p class="text-secondary">
+                      <strong class="text-success">🙏 Prière :</strong> ${prayer}
+                    </p>
+                    <hr class="my-3">
+                  ` : ""}
 
-                  ${citation ? `<div class="mt-4 text-primary"><em>💬 "${citation}"</em></div>` : ""}
+                  ${citation ? `
+                    <div class="mt-3 text-primary">
+                      <em>💬 "${citation}"</em>
+                    </div>
+                  ` : ""}
                 </div>
               </div>
             </section>
