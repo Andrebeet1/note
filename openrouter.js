@@ -1,7 +1,11 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const prompt = "Génère 20 notes spirituelles chrétiennes inspirantes, courtes (100 mots max), aléatoires, avec un verset biblique et une courte prière. Formate les notes comme suit : \n\n1. \"Verset\" - Référence\nPrière : texte de la prière.";
+const prompt = `Génère 20 notes spirituelles chrétiennes inspirantes, courtes (100 mots max), aléatoires, chacune avec :
+- un verset biblique,
+- une courte méditation (3-5 lignes),
+- et une prière (1-2 lignes).
+Retourne-les séparées par deux sauts de ligne (\n\n).`;
 
 async function generateNotes() {
   try {
@@ -10,7 +14,8 @@ async function generateNotes() {
       {
         model: "openai/gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 3000
+        max_tokens: 2000,
+        temperature: 1.0
       },
       {
         headers: {
@@ -25,29 +30,17 @@ async function generateNotes() {
     if (
       response.data &&
       response.data.choices &&
-      response.data.choices.length > 0 &&
+      response.data.choices[0] &&
       response.data.choices[0].message &&
       response.data.choices[0].message.content
     ) {
-      const raw = response.data.choices[0].message.content;
-
-      // Nettoyage et séparation correcte des notes
-      const notesArray = raw
-        .split(/\n?\d+\.\s+/) // découpe chaque note commençant par 1. 2. etc.
-        .map(s => s.trim())
-        .filter(Boolean)
-        .map((note, index) => `Note ${index + 1}\n${note}`); // ajoute un titre "Note x" avant chaque bloc
-
-      const cleanedContent = notesArray.join("\n\n");
-
-      return cleanedContent; // 👉 ceci sera envoyé au frontend dans /api/notes
+      return response.data.choices[0].message.content;
     } else {
-      return "Réponse vide ou inattendue reçue de l'API OpenRouter.";
+      return "Réponse vide ou inattendue de l'API.";
     }
-
   } catch (error) {
-    console.error("Erreur avec OpenRouter:", error.response?.data || error.message);
-    return `Erreur lors de la génération des notes : ${JSON.stringify(error.response?.data || error.message)}`;
+    console.error("Erreur OpenRouter:", error.response?.data || error.message);
+    return `Erreur API : ${JSON.stringify(error.response?.data || error.message)}`;
   }
 }
 
