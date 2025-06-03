@@ -30,7 +30,6 @@
       display: none;
       border-radius: 1rem;
       padding: 0;
-      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
       transition: all 0.4s ease-in-out;
     }
 
@@ -46,10 +45,6 @@
 
     .btn-custom:hover {
       background-color: #0056b3;
-    }
-
-    .card-body {
-      position: relative;
     }
 
     .action-buttons {
@@ -68,11 +63,18 @@
     blockquote {
       border-left: 4px solid #198754;
       padding-left: 1rem;
+      margin-bottom: 0;
+    }
+
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
+    <!-- Header -->
     <header class="text-center mb-4">
       <h1 class="animate__animated animate__fadeInDown">📖 Méditations quotidiennes</h1>
       <p class="text-muted">Laissez Dieu parler à votre cœur chaque jour.</p>
@@ -88,9 +90,10 @@
       <button id="nextBtn" class="btn btn-outline-secondary">Suivant ➡️</button>
     </div>
 
-    <!-- Zone de notes -->
+    <!-- Notes Display -->
     <div id="supportNotes" class="animate__animated animate__fadeIn"></div>
 
+    <!-- Footer -->
     <footer>
       <p>&copy; 2025 - Méditations quotidiennes. Tous droits réservés.</p>
     </footer>
