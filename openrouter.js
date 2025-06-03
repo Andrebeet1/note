@@ -1,11 +1,15 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const prompt = `Génère 20 notes spirituelles chrétiennes inspirantes, courtes (100 mots max), aléatoires, chacune avec :
-- un verset biblique,
-- une courte méditation (3-5 lignes),
-- et une prière (1-2 lignes).
-Retourne-les séparées par deux sauts de ligne (\n\n).`;
+const prompt = `Génère 20 notes chrétiennes inspirantes. Pour chaque note, suis exactement ce format :
+
+1. Commence par un **verset biblique** (1 ligne), comme une citation (ex : Jean 3:16 - "Car Dieu a tant aimé le monde...").
+
+2. Ensuite, saute une ligne puis écris une **méditation courte** de 3 à 5 lignes (maximum 80 mots).
+
+3. Ensuite, saute une ligne et écris une **prière simple d'une ou deux lignes**, en citant le verset ou son idée principale.
+
+Sépare chaque note par deux sauts de ligne (\n\n). N'utilise pas de titre ni de numérotation. N’ajoute rien d’autre.`;
 
 async function generateNotes() {
   try {
