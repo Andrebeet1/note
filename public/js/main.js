@@ -39,20 +39,26 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          // Traitement du format attendu
+          // Ligne 0 : thème (ex: 🌿 1. Verset + Prière : Thème)
           const themeLine = escapeHtml(lines[0] || "🌿 Verset + Prière");
-          const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
-          const verseLine = escapeHtml((lines[2] || "").replace(/^>\s*/, ''));
-          const prayerLabelLine = lines.find(l => l.trim().startsWith("🙏")) || "";
-          const prayerLine = escapeHtml(prayerLabelLine.replace(/^🙏\s*Prière\s*:\s*/i, ''));
 
-          // Récupération de la méditation (entre le verset et la prière)
+          // Ligne 1 : label du verset (ex: 📖 Verset du jour)
+          const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
+
+          // Ligne 2 : verset avec > en début
+          const verseLine = escapeHtml((lines[2] || "").replace(/^>\s*/, ""));
+
+          // Recherche ligne de prière (qui commence par "🙏")
           const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
-          const meditationLines = lines.slice(3, prayerIndex > 3 ? prayerIndex : lines.length - 1);
+          const prayerLabelLine = prayerIndex >= 0 ? lines[prayerIndex] : "";
+          const prayerLine = escapeHtml(prayerLabelLine.replace(/^🙏\s*Prière\s*:\s*/i, ""));
+
+          // Méditation : toutes les lignes entre le verset et la prière (exclues)
+          const meditationLines = prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
           const meditation = escapeHtml(meditationLines.join(" ").trim());
 
           return `
-            <section class="${i === 0 ? 'active animate__fadeIn' : ''}">
+            <section class="${i === 0 ? "active animate__fadeIn" : ""}">
               <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
                 <div class="card-body">
                   <h5 class="text-success mb-2">${themeLine}</h5>
