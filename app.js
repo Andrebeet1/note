@@ -16,12 +16,12 @@ try {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // Sert les fichiers dans /public
+app.use(express.static(path.join(__dirname, "public"))); // Sert les fichiers statiques de /public
 
-// API Route : Génère et renvoie les notes
+// Route API : Génère et renvoie les notes
 app.get("/api/notes", async (req, res) => {
   if (typeof generateNotes !== "function") {
-    return res.status(500).json({ error: "Fonction generateNotes non disponible." });
+    return res.status(500).json({ error: "La fonction generateNotes est indisponible." });
   }
 
   try {
@@ -33,14 +33,14 @@ app.get("/api/notes", async (req, res) => {
       notes.trim() === "" ||
       notes.toLowerCase().includes("erreur")
     ) {
-      return res.status(502).json({ error: "Contenu vide ou invalide." });
+      return res.status(502).json({ error: "Contenu vide ou invalide retourné." });
     }
 
-    res.setHeader("Cache-Control", "no-store"); // Optionnel : empêche la mise en cache
-    res.status(200).json({ content: notes });
+    res.setHeader("Cache-Control", "no-store"); // Empêche la mise en cache
+    return res.status(200).json({ content: notes });
   } catch (err) {
     console.error("❌ Erreur lors de la génération des notes :", err.message || err);
-    res.status(500).json({ error: "Erreur interne du serveur." });
+    return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 });
 
