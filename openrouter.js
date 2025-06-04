@@ -1,8 +1,8 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const prompt = `
-Génère 20 notes chrétiennes inspirantes, chacune respectant strictement le format suivant :
+const BASE_PROMPT = (start, end) => `
+Génère les notes chrétiennes inspirantes numéro ${start} à ${end}, chacune respectant strictement le format suivant :
 
 🌿 [numéro]. Verset + Prière : [Thème inspirant ou mot-clé]
 
@@ -18,27 +18,25 @@ Génère 20 notes chrétiennes inspirantes, chacune respectant strictement le fo
 Consignes impératives :  
 - Respecte précisément ce format pour chaque note, sans aucune variation.  
 - Ne fournis aucun contenu supplémentaire : pas d’introduction, de résumé ou de séparateur.  
-- Numérote les notes de 1 à 20 dans la ligne "🌿 [numéro]. Verset + Prière :".  
+- Numérote les notes de ${start} à ${end} dans la ligne "🌿 [numéro]. Verset + Prière :".  
 - Sépare chaque note par exactement deux retours à la ligne (\\n\\n).  
 - Veille à ce que la prière soit complète et suffisamment longue pour inspirer.
 
 Merci de suivre ces instructions à la lettre.
 `;
 
-async function generateNotes() {
-  if (!process.env.COHERE_API_KEY) {
-    throw new Error("❌ Clé API Cohere manquante dans le fichier .env.");
-  }
+async function fetchBatch(start, end) {
+  const prompt = BASE_PROMPT(start, end);
 
   try {
     const response = await axios.post(
       'https://api.cohere.ai/v1/chat',
       {
         model: "command-r-plus",
-        temperature: 1,
+        temperature: 0.9,
         max_tokens: 4096,
         chat_history: [],
-        message: prompt
+        message: prompt,
       },
       {
         headers: {
@@ -53,12 +51,28 @@ async function generateNotes() {
     if (messageContent && typeof messageContent === "string" && messageContent.trim() !== "") {
       return messageContent.trim();
     } else {
-      return "Réponse vide ou inattendue de l'API.";
+      return `⚠️ Réponse vide ou inattendue de l'API pour les notes ${start} à ${end}.`;
     }
+
   } catch (error) {
-    console.error("❌ Erreur Cohere:", error.response?.data || error.message);
+    console.error(`❌ Erreur lors de la génération des notes ${start} à ${end}:`, error.response?.data || error.message);
     return `Erreur API : ${JSON.stringify(error.response?.data || error.message)}`;
   }
 }
 
-module.exports = generateNotes;
+async function generateAllNotes() {
+  const results = [];
+
+  for (let i = 0; i < 4; i++) {
+    const start = i * 5 + 1;
+    const end = start + 4;
+
+    console.log(`⏳ Génération des notes ${start} à ${end}...`);
+    const batch = await fetchBatch(start, end);
+    results.push(batch);
+  }
+
+  return results.join("\n\n");
+}
+
+module.exports = generateAllNotes;
