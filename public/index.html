@@ -4,26 +4,36 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Recevez chaque jour une méditation biblique inspirante.">
-  <meta name="author" content="Équipe Méditations quotidiennes">
+  <meta name="description" content="Recevez chaque jour une méditation biblique inspirante." />
+  <meta name="author" content="Équipe Méditations quotidiennes" />
 
   <title>📖 Méditations quotidiennes</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Google Fonts: Préchargement pour meilleure performance -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" as="style" onload="this.rel='stylesheet'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  </noscript>
 
   <!-- Bootstrap 5 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-Bk7xPBT+bb99P+1qJeuZUpNlTq2FTf2PbT6qfjJKGL07wp9s7QOPxrZ0HfNlg14y"
+    crossorigin="anonymous"
+  />
 
   <!-- Animate.css -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"
+    rel="stylesheet"
+  />
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
   <style>
+    /* Global */
     body {
       background: linear-gradient(135deg, #fdfbfb, #ebedee);
       font-family: 'Poppins', sans-serif;
@@ -31,6 +41,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      margin: 0;
     }
 
     h1 {
@@ -38,13 +49,26 @@
       font-weight: 600;
     }
 
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     #supportNotes section {
       display: none;
       border-radius: 1rem;
+      transition: opacity 0.5s ease-in-out;
     }
 
     #supportNotes section.active {
       display: block;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
 
     .btn-custom {
@@ -52,17 +76,33 @@
       border: none;
       color: white;
       font-weight: 500;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
 
-    .btn-custom:hover {
+    .btn-custom:hover,
+    .btn-custom:focus {
       background-color: #157347;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.5);
     }
 
-    .action-buttons {
+    .nav-btns {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
       gap: 0.5rem;
-      margin-top: 1rem;
+    }
+
+    .nav-btns button {
+      flex: 1;
+    }
+
+    @media (min-width: 577px) {
+      .nav-btns button {
+        flex: initial;
+        min-width: 120px;
+      }
     }
 
     footer {
@@ -71,22 +111,33 @@
       text-align: center;
       font-size: 0.9rem;
       color: #666;
+      background-color: #f8f9fa;
     }
 
     blockquote {
       border-left: 4px solid #198754;
       padding-left: 1rem;
       margin-bottom: 0;
+      color: #555;
     }
 
     .card {
       border-radius: 1rem;
       box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
       background-color: #fff;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover,
+    .card:focus-within {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
     }
 
     #pageIndicator {
       font-size: 1rem;
+      font-weight: 600;
+      color: #198754;
     }
 
     .note-loading {
@@ -98,35 +149,17 @@
     }
 
     @keyframes pulse {
-      0%, 100% {
-        opacity: 0.6;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-
-    .nav-btns {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      gap: 0.5rem;
-    }
-
-    @media (max-width: 576px) {
-      .nav-btns button {
-        flex: 1;
-      }
+      0%, 100% {opacity: 0.6;}
+      50% {opacity: 1;}
     }
   </style>
 </head>
 
 <body>
-  <div class="container py-4 flex-grow-1 d-flex flex-column">
+  <div class="container py-4 d-flex flex-column flex-grow-1">
     <!-- Header -->
-    <header class="text-center mb-5">
-      <h1 class="animate__animated animate__fadeInDown">📖 Méditations quotidiennes</h1>
+    <header class="text-center mb-5" role="banner">
+      <h1 class="animate__animated animate__fadeInDown" tabindex="0">📖 Méditations quotidiennes</h1>
       <p class="text-muted">Laissez Dieu parler à votre cœur chaque jour.</p>
       <button id="generateBtn" class="btn btn-custom mt-3" aria-label="Régénérer les notes">
         🔄 Régénérer les notes
@@ -134,29 +167,21 @@
     </header>
 
     <!-- Navigation -->
-    <nav class="nav-btns">
-      <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente">
+    <nav class="nav-btns" aria-label="Navigation entre les notes">
+      <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente" disabled>
         ⬅️ Précédent
       </button>
-      <span id="pageIndicator" class="fw-semibold">Note 1</span>
-      <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante">
+      <span id="pageIndicator" class="fw-semibold" aria-live="polite" aria-atomic="true">Note 1</span>
+      <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante" disabled>
         Suivant ➡️
       </button>
     </nav>
 
     <!-- Notes Display -->
-    <main id="supportNotes" class="animate__animated animate__fadeIn flex-grow-1">
+    <main id="supportNotes" class="animate__animated animate__fadeIn flex-grow-1" role="main" aria-live="polite" aria-atomic="true">
       <div class="note-loading">⏳ Chargement des méditations en cours...</div>
     </main>
 
     <!-- Footer -->
-    <footer>
-      <p>&copy; 2025 - Méditations quotidiennes. Tous droits réservés.</p>
-    </footer>
-  </div>
-
-  <!-- jQuery & Script -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="js/main.js" defer></script>
-</body>
-</html>
+    <footer role="contentinfo">
+      <p>&
