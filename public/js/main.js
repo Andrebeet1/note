@@ -3,15 +3,13 @@ $(document).ready(function () {
   let totalNotes = 0;
 
   function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, function (match) {
-      return {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;',
-      }[match];
-    });
+    return text.replace(/[&<>"']/g, match => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }[match]));
   }
 
   function updateNavigation() {
@@ -32,28 +30,22 @@ $(document).ready(function () {
       .done(function (data) {
         const raw = data.content || data;
         const notes = raw.split(/\n\s*\n/).filter(n => n.trim().startsWith("🌿"));
-
         totalNotes = notes.length;
         currentIndex = 0;
 
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          const theme = escapeHtml(lines[0] || "🌿 Méditation du jour");
-          const verseLabel = escapeHtml(lines[1] || "📖 Verset du jour");
-          const verse = escapeHtml((lines[2] || "").replace(/^>\s*/, ""));
+          const titleLine = escapeHtml(lines[0] || "🌿 Note");
+          const verseLine = escapeHtml(lines[2] || "");
+          const verseRefLine = escapeHtml(lines[2]?.split("—")[1] || "");
 
           const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.trim().startsWith("💬"));
 
-          const meditationLines =
-            prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
-
-          const meditation = escapeHtml(meditationLines.join(" ").trim());
-
           const prayerLines = (prayerIndex >= 0 && citationIndex > prayerIndex)
             ? lines.slice(prayerIndex, citationIndex)
-            : (prayerIndex >= 0 ? lines.slice(prayerIndex) : []);
+            : lines.slice(prayerIndex);
           const prayer = escapeHtml(
             prayerLines.join(" ").replace(/^🙏\s*Prière\s*:\s*/i, "").trim()
           );
@@ -70,20 +62,14 @@ $(document).ready(function () {
                   <div class="card-body">
                     <h2 class="card-title text-center text-primary mb-4">🌿 Note Spirituelle du Jour</h2>
 
-                    <h5 class="text-secondary">${theme.replace("🌿", "").trim()}</h5>
+                    <h5 class="text-secondary">${titleLine.replace("🌿", "").trim()}</h5>
                     <hr>
 
                     <h6 class="text-muted">📖 Verset du jour :</h6>
                     <blockquote class="blockquote ps-3 border-start border-3 border-success">
-                      <p class="mb-0 fst-italic">« ${verse} »</p>
-                      <footer class="blockquote-footer mt-1">${verseLabel.replace("📖", "").trim()}</footer>
+                      <p class="mb-0 fst-italic">« ${verseLine.split("—")[0].trim()} »</p>
+                      <footer class="blockquote-footer mt-1">${verseLine.split("—")[1]?.trim() || ""}</footer>
                     </blockquote>
-
-                    ${meditation ? `
-                      <hr>
-                      <h6 class="text-muted">🕊️ Méditation :</h6>
-                      <p class="lh-lg text-dark">${meditation}</p>
-                    ` : ""}
 
                     ${prayer ? `
                       <hr>
@@ -99,7 +85,6 @@ $(document).ready(function () {
                         <footer class="blockquote-footer mt-1">Inconnu</footer>
                       </blockquote>
                     ` : ""}
-
                   </div>
                 </div>
               </div>
@@ -134,6 +119,5 @@ $(document).ready(function () {
 
   $("#generateBtn").click(() => loadNotes());
 
-  loadNotes(); // Initial
+  loadNotes(); // Initial load
 });
-
