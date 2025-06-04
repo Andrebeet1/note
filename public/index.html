@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>📖 Méditations quotidiennes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap 5 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
-  <!-- Animate.css -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+  <!-- Preconnect Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <!-- Google Font: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
-  <!-- Favicon (optional) -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
   <style>
     body {
       background: linear-gradient(135deg, #fdfbfb, #ebedee);
       font-family: 'Poppins', sans-serif;
       color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     h1 {
@@ -57,7 +64,8 @@
     }
 
     footer {
-      margin-top: 3rem;
+      margin-top: auto;
+      padding: 1.5rem 0;
       text-align: center;
       font-size: 0.9rem;
       color: #666;
@@ -72,10 +80,18 @@
     .card {
       border-radius: 1rem;
       box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+      background-color: #fff;
     }
 
     #pageIndicator {
       font-size: 1rem;
+    }
+
+    .note-loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      font-style: italic;
+      color: #999;
     }
   </style>
 </head>
@@ -83,23 +99,29 @@
 <body>
   <div class="container py-4">
     <!-- Header -->
-    <header class="text-center mb-4">
+    <header class="text-center mb-5">
       <h1 class="animate__animated animate__fadeInDown">📖 Méditations quotidiennes</h1>
       <p class="text-muted">Laissez Dieu parler à votre cœur chaque jour.</p>
-      <button id="generateBtn" class="btn btn-custom mt-3">
+      <button id="generateBtn" class="btn btn-custom mt-3" aria-label="Régénérer les notes">
         🔄 Régénérer les notes
       </button>
     </header>
 
     <!-- Navigation -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente">⬅️ Précédent</button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente">
+        ⬅️ Précédent
+      </button>
       <span id="pageIndicator" class="fw-semibold">Note 1</span>
-      <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante">Suivant ➡️</button>
+      <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante">
+        Suivant ➡️
+      </button>
     </div>
 
     <!-- Notes Display -->
-    <div id="supportNotes" class="animate__animated animate__fadeIn"></div>
+    <div id="supportNotes" class="animate__animated animate__fadeIn">
+      <div class="note-loading">Chargement des méditations en cours...</div>
+    </div>
 
     <!-- Footer -->
     <footer>
