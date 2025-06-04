@@ -7,13 +7,13 @@ $(document).ready(function () {
     return $('<div>').text(text).html();
   }
 
-  // Mise à jour de la navigation et affichage de la note active
+  // Met à jour l’affichage et la navigation
   function updateNavigation() {
     const sections = $("#supportNotes section");
-    sections.removeClass("active animate__fadeIn");
+    sections.removeClass("active animate__fadeIn").attr("aria-hidden", "true");
 
     const currentSection = sections.eq(currentIndex);
-    currentSection.addClass("active animate__fadeIn");
+    currentSection.addClass("active animate__fadeIn").attr("aria-hidden", "false");
 
     $("#pageIndicator").html(
       `<span class="badge bg-success rounded-pill">Note ${currentIndex + 1} / ${totalNotes}</span>`
@@ -23,7 +23,7 @@ $(document).ready(function () {
     $("#nextBtn").prop("disabled", currentIndex >= totalNotes - 1);
   }
 
-  // Affiche un loader pendant le chargement des notes
+  // Affiche ou cache le loader pendant le chargement
   function showLoading(show) {
     if (show) {
       $("#supportNotes").html(`
@@ -36,7 +36,7 @@ $(document).ready(function () {
     }
   }
 
-  // Chargement des notes depuis l'API et rendu HTML
+  // Charge les notes depuis l'API et les affiche
   function loadNotes() {
     $("#generateBtn")
       .prop("disabled", true)
@@ -47,7 +47,8 @@ $(document).ready(function () {
     $.get("/api/notes")
       .done(function (data) {
         const raw = data.content || data;
-        const notes = raw.split(/\n\s*\n/).filter(n => n.trim().startsWith("🌿"));
+        // Séparer par double saut de ligne (au moins 2), filtre pour notes commençant par 🌿
+        const notes = raw.split(/\n{2,}/).filter(n => n.trim().startsWith("🌿"));
 
         totalNotes = notes.length;
         currentIndex = 0;
@@ -61,27 +62,41 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          // Extraction et nettoyage
+          // Titre, exemple : "🌿 1. Verset + Prière : Espoir"
           const titleLine = sanitizeHtml(lines[0] || "🌿 Note");
 
+          // Trouve ligne contenant "📖", extrait verset et référence
           const verseLineIndex = lines.findIndex(l => l.includes("📖"));
           const verseTextLine = lines[verseLineIndex + 1] || "";
-          const [verseText, verseRef] = verseTextLine.split("—").map(part => sanitizeHtml(part?.trim() || ""));
+          const [verseTextRaw, verseRefRaw] = verseTextLine.split("—");
+          const verseText = sanitizeHtml(verseTextRaw?.trim() || "");
+          const verseRef = sanitizeHtml(verseRefRaw?.trim() || "");
 
+          // Indexs des sections prière et citation
           const prayerIndex = lines.findIndex(l => l.startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.startsWith("💬"));
 
+          // Extraire prière entre prière et citation, ou fin si citation absente
           const prayerLines = (prayerIndex >= 0 && citationIndex > prayerIndex)
             ? lines.slice(prayerIndex, citationIndex)
             : lines.slice(prayerIndex);
-          const prayerText = sanitizeHtml(
-            prayerLines.join(" ").replace(/^🙏\s*Prière\s*:\s*/i, "").trim()
-          );
+          let prayerText = "";
+          if (prayerLines.length > 0) {
+            prayerText = prayerLines.join(" ")
+              .replace(/^🙏\s*Prière\s*:\s*/i, "")
+              .trim();
+            prayerText = sanitizeHtml(prayerText);
+          }
 
+          // Citation
           const citationLines = citationIndex >= 0 ? lines.slice(citationIndex) : [];
-          const citationText = sanitizeHtml(
-            citationLines.join(" ").replace(/^💬\s*Citation\s*:\s*/i, "").trim()
-          );
+          let citationText = "";
+          if (citationLines.length > 0) {
+            citationText = citationLines.join(" ")
+              .replace(/^💬\s*Citation\s*:\s*/i, "")
+              .trim();
+            citationText = sanitizeHtml(citationText);
+          }
 
           return `
             <section class="${i === 0 ? "active animate__fadeIn" : ""}" aria-hidden="${i !== 0}">
@@ -134,7 +149,7 @@ $(document).ready(function () {
       });
   }
 
-  // Gestion des boutons de navigation
+  // Navigation
   $("#prevBtn").click(() => {
     if (currentIndex > 0) {
       currentIndex--;
@@ -149,7 +164,7 @@ $(document).ready(function () {
     }
   });
 
-  // Bouton régénérer (rechargement des notes)
+  // Bouton de génération/régénération
   $("#generateBtn").click(() => loadNotes());
 
   // Chargement initial
