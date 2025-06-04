@@ -2,86 +2,49 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Recevez chaque jour une méditation biblique inspirante." />
-  <meta name="author" content="Équipe Méditations quotidiennes" />
+  <title>Notes Spirituelles</title>
 
-  <title>📖 Méditations quotidiennes</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
 
-  <!-- Google Fonts -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" as="style" onload="this.rel='stylesheet'" />
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  </noscript>
+  <!-- Animate.css pour les animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Bk7xPBT+bb99P+1qJeuZUpNlTq2FTf2PbT6qfjJKGL07wp9s7QOPxrZ0HfNlg14y" crossorigin="anonymous" />
-
-  <!-- Animate.css -->
-  <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet" />
-
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-  <style>
-    /* TES STYLES EXISTANTS SONT INTACTS (je les ai laissés tels quels) */
-    body {
-      background: linear-gradient(135deg, #fdfbfb, #ebedee);
-      font-family: 'Poppins', sans-serif;
-      color: #2c3e50;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      margin: 0;
-    }
-
-    /* ... tous tes autres styles ici ... */
-
-    @keyframes pulse {
-      0%, 100% {opacity: 0.6;}
-      50% {opacity: 1;}
-    }
-  </style>
 </head>
-
 <body>
-  <div class="container py-4 d-flex flex-column flex-grow-1">
-    <!-- Header -->
-    <header class="text-center mb-5" role="banner">
-      <h1 class="animate__animated animate__fadeInDown" tabindex="0">📖 Méditations quotidiennes</h1>
-      <p class="text-muted">Laissez Dieu parler à votre cœur chaque jour.</p>
-      <button id="generateBtn" class="btn btn-custom mt-3" aria-label="Régénérer les notes">
-        🔄 Régénérer les notes
-      </button>
-    </header>
 
-    <!-- Navigation -->
-    <nav class="nav-btns" aria-label="Navigation entre les notes">
-      <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente" disabled>
-        ⬅️ Précédent
-      </button>
-      <span id="pageIndicator" class="fw-semibold" aria-live="polite" aria-atomic="true">Note 1</span>
-      <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante" disabled>
-        Suivant ➡️
-      </button>
-    </nav>
+<div class="container my-4">
+  <h1 class="text-center mb-4">🌿 Notes Spirituelles du Jour</h1>
 
-    <!-- Notes Display -->
-    <main id="supportNotes" class="animate__animated animate__fadeIn flex-grow-1" role="main" aria-live="polite" aria-atomic="true">
-      <div class="note-loading">⏳ Chargement des méditations en cours...</div>
-    </main>
-
-    <!-- Footer -->
-    <footer role="contentinfo">
-      <p>&copy; 2025 Méditations quotidiennes. Tous droits réservés.</p>
-    </footer>
+  <div id="supportNotes">
+    <!-- Les notes seront chargées et affichées ici -->
   </div>
 
-  <!-- Bootstrap Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <button id="prevBtn" class="btn btn-outline-primary" disabled>⬅️ Précédent</button>
+    <div id="pageIndicator" aria-live="polite" aria-atomic="true"></div>
+    <button id="nextBtn" class="btn btn-outline-primary" disabled>➡️ Suivant</button>
+  </div>
 
-  <!-- TON SCRIPT JS ICI -->
-  <script src="js/main.js"></script>
+  <div class="text-center mt-4">
+    <button id="generateBtn" class="btn btn-success">🔄 Régénérer les notes</button>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJ+Yd2yjX9sY+fQRvF6tZcLmqWsmTPtk9jzYY="
+        crossorigin="anonymous"></script>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-BS3vkGIdqA6IYdO0uU4uKZ2eSbKN9Pp6tZc9aYI2sZwZjFepQWZNuEZiLfuEZ+fo"
+        crossorigin="anonymous"></script>
+
+<!-- Script principal -->
+<script src="js/main.js"></script>
+
 </body>
 </html>
