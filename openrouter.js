@@ -33,9 +33,8 @@ async function generateNotes() {
         model: "command-r-plus",
         temperature: 1,
         max_tokens: 4096,
-        messages: [
-          { role: "user", content: prompt }
-        ]
+        chat_history: [],
+        message: prompt
       },
       {
         headers: {
@@ -45,7 +44,7 @@ async function generateNotes() {
       }
     );
 
-    const messageContent = response?.data?.text || response?.data?.message?.content;
+    const messageContent = response?.data?.text;
     if (messageContent) {
       return messageContent.trim();
     } else {
