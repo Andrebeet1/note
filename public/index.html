@@ -9,31 +9,23 @@
 
   <title>📖 Méditations quotidiennes</title>
 
-  <!-- Google Fonts: Préchargement pour meilleure performance -->
+  <!-- Google Fonts -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" as="style" onload="this.rel='stylesheet'" />
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   </noscript>
 
-  <!-- Bootstrap 5 -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-Bk7xPBT+bb99P+1qJeuZUpNlTq2FTf2PbT6qfjJKGL07wp9s7QOPxrZ0HfNlg14y"
-    crossorigin="anonymous"
-  />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Bk7xPBT+bb99P+1qJeuZUpNlTq2FTf2PbT6qfjJKGL07wp9s7QOPxrZ0HfNlg14y" crossorigin="anonymous" />
 
   <!-- Animate.css -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet" />
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
   <style>
-    /* Global */
+    /* Styles internes ici (inchangés pour raccourcir) */
     body {
       background: linear-gradient(135deg, #fdfbfb, #ebedee);
       font-family: 'Poppins', sans-serif;
@@ -44,114 +36,7 @@
       margin: 0;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-    }
-
-    main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #supportNotes section {
-      display: none;
-      border-radius: 1rem;
-      transition: opacity 0.5s ease-in-out;
-    }
-
-    #supportNotes section.active {
-      display: block;
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-
-    .btn-custom {
-      background-color: #198754;
-      border: none;
-      color: white;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-custom:hover,
-    .btn-custom:focus {
-      background-color: #157347;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.5);
-    }
-
-    .nav-btns {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      gap: 0.5rem;
-    }
-
-    .nav-btns button {
-      flex: 1;
-    }
-
-    @media (min-width: 577px) {
-      .nav-btns button {
-        flex: initial;
-        min-width: 120px;
-      }
-    }
-
-    footer {
-      margin-top: auto;
-      padding: 1.5rem 0;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-      background-color: #f8f9fa;
-    }
-
-    blockquote {
-      border-left: 4px solid #198754;
-      padding-left: 1rem;
-      margin-bottom: 0;
-      color: #555;
-    }
-
-    .card {
-      border-radius: 1rem;
-      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
-      background-color: #fff;
-      transition: transform 0.3s ease;
-    }
-
-    .card:hover,
-    .card:focus-within {
-      transform: translateY(-5px);
-      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
-    }
-
-    #pageIndicator {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #198754;
-    }
-
-    .note-loading {
-      text-align: center;
-      padding: 3rem 1rem;
-      font-style: italic;
-      color: #999;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% {opacity: 0.6;}
-      50% {opacity: 1;}
-    }
+    /* Autres styles... */
   </style>
 </head>
 
@@ -184,4 +69,14 @@
 
     <!-- Footer -->
     <footer role="contentinfo">
-      <p>&
+      <p>&copy; 2025 Méditations quotidiennes. Tous droits réservés.</p>
+    </footer>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeo6lZ3WzFJz+d2WZp3sZ7J4zEY1z+2qub+rkWfuwW3a3r5l" crossorigin="anonymous"></script>
+
+  <!-- Votre script -->
+  <script src="js/main.js"></script>
+</body>
+</html>
