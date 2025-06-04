@@ -28,31 +28,31 @@ Merci de suivre ces instructions à la lettre.
 async function generateNotes() {
   try {
     const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
+      'https://api.cohere.ai/v1/chat',
       {
-        model: "openai/gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 4000,
-        temperature: 1.0,
+        model: "command-r-plus",
+        temperature: 1,
+        max_tokens: 4096,
+        messages: [
+          { role: "user", content: prompt }
+        ]
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://note-ohr8.onrender.com",
-          "X-Title": "Générateur de notes spirituelles",
-        },
+          Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    const messageContent = response?.data?.choices?.[0]?.message?.content;
+    const messageContent = response?.data?.text || response?.data?.message?.content;
     if (messageContent) {
       return messageContent.trim();
     } else {
       return "Réponse vide ou inattendue de l'API.";
     }
   } catch (error) {
-    console.error("Erreur OpenRouter:", error.response?.data || error.message);
+    console.error("Erreur Cohere:", error.response?.data || error.message);
     return `Erreur API : ${JSON.stringify(error.response?.data || error.message)}`;
   }
 }
