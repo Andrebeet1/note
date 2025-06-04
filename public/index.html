@@ -5,11 +5,9 @@
   <title>📖 Méditations quotidiennes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Preconnect Google Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <!-- Google Font: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
   <!-- Bootstrap 5 -->
@@ -39,7 +37,6 @@
     #supportNotes section {
       display: none;
       border-radius: 1rem;
-      transition: all 0.4s ease-in-out;
     }
 
     #supportNotes section.active {
@@ -51,6 +48,7 @@
       border: none;
       color: white;
       font-weight: 500;
+      transition: background-color 0.3s;
     }
 
     .btn-custom:hover {
@@ -92,6 +90,30 @@
       padding: 3rem 1rem;
       font-style: italic;
       color: #999;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 576px) {
+      .nav-btns button {
+        flex: 1;
+        margin: 0 0.25rem;
+      }
     }
   </style>
 </head>
@@ -108,7 +130,7 @@
     </header>
 
     <!-- Navigation -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <nav class="nav-btns">
       <button id="prevBtn" class="btn btn-outline-secondary" aria-label="Note précédente">
         ⬅️ Précédent
       </button>
@@ -116,12 +138,12 @@
       <button id="nextBtn" class="btn btn-outline-secondary" aria-label="Note suivante">
         Suivant ➡️
       </button>
-    </div>
+    </nav>
 
     <!-- Notes Display -->
-    <div id="supportNotes" class="animate__animated animate__fadeIn">
-      <div class="note-loading">Chargement des méditations en cours...</div>
-    </div>
+    <main id="supportNotes" class="animate__animated animate__fadeIn">
+      <div class="note-loading">⏳ Chargement des méditations en cours...</div>
+    </main>
 
     <!-- Footer -->
     <footer>
