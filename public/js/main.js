@@ -18,7 +18,7 @@ $(document).ready(function () {
     $("#supportNotes section").removeClass("active animate__fadeIn");
     const currentSection = $("#supportNotes section").eq(currentIndex);
     currentSection.addClass("active animate__fadeIn");
-    $("#pageIndicator").text(`Note ${currentIndex + 1} / ${totalNotes}`);
+    $("#pageIndicator").html(`<span class="badge bg-success rounded-pill">Note ${currentIndex + 1} / ${totalNotes}</span>`);
     $("#prevBtn").prop("disabled", currentIndex === 0);
     $("#nextBtn").prop("disabled", currentIndex >= totalNotes - 1);
   }
@@ -31,7 +31,7 @@ $(document).ready(function () {
     $.get("/api/notes")
       .done(function (data) {
         const raw = data.content || data;
-        const notes = raw.split(/\n\s*\n/).filter(n => n.trim() !== "");
+        const notes = raw.split(/\n\s*\n/).filter(n => n.trim().startsWith("🌿"));
 
         totalNotes = notes.length;
         currentIndex = 0;
@@ -46,42 +46,59 @@ $(document).ready(function () {
           const prayerIndex = lines.findIndex(l => l.trim().startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.trim().startsWith("💬"));
 
-          const meditationLines = prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
+          const meditationLines =
+            prayerIndex > 3 ? lines.slice(3, prayerIndex) : [];
+
           const meditation = escapeHtml(meditationLines.join(" ").trim());
 
-          const prayerRaw = prayerIndex >= 0 ? lines[prayerIndex] : "";
-          const prayer = escapeHtml(prayerRaw.replace(/^🙏\s*Prière\s*:\s*/i, ""));
+          const prayerLines = (prayerIndex >= 0 && citationIndex > prayerIndex)
+            ? lines.slice(prayerIndex, citationIndex)
+            : (prayerIndex >= 0 ? lines.slice(prayerIndex) : []);
+          const prayer = escapeHtml(
+            prayerLines.join(" ").replace(/^🙏\s*Prière\s*:\s*/i, "").trim()
+          );
 
-          const citationRaw = citationIndex >= 0 ? lines[citationIndex] : "";
-          const citation = escapeHtml(citationRaw.replace(/^💬\s*Citation\s*:\s*/i, ""));
+          const citationLines = citationIndex >= 0 ? lines.slice(citationIndex) : [];
+          const citation = escapeHtml(
+            citationLines.join(" ").replace(/^💬\s*Citation\s*:\s*/i, "").trim()
+          );
 
           return `
             <section class="${i === 0 ? "active animate__fadeIn" : ""}">
               <div class="card shadow border-0 mb-4 animate__animated animate__fadeInUp" style="border-radius: 1rem;">
-                <div class="card-body">
-                  <h5 class="text-success fw-semibold mb-3">${theme}</h5>
+                <div class="card-body px-4 py-4">
 
-                  <p class="fw-medium text-muted mb-1">${verseLabel}</p>
-                  <blockquote class="blockquote ps-3 border-start border-success">
-                    <p class="mb-0 fst-italic">"${verse}"</p>
-                  </blockquote>
+                  <h5 class="text-success fw-bold mb-3">
+                    ${theme}
+                  </h5>
 
-                  <hr class="my-3">
+                  <div class="mb-3">
+                    <div class="text-muted small fw-semibold mb-1">${verseLabel}</div>
+                    <blockquote class="blockquote ps-3 border-start border-3 border-success">
+                      <p class="mb-0 fst-italic">"${verse}"</p>
+                    </blockquote>
+                  </div>
 
-                  ${meditation ? `<p class="text-dark lh-lg">${meditation}</p><hr class="my-3">` : ""}
+                  ${meditation ? `
+                    <div class="mb-3">
+                      <h6 class="text-dark fw-semibold mb-2">🕊️ Méditation</h6>
+                      <p class="lh-lg text-dark">${meditation}</p>
+                    </div>
+                  ` : ""}
 
                   ${prayer ? `
-                    <p class="text-secondary">
-                      <strong class="text-success">🙏 Prière :</strong> ${prayer}
-                    </p>
-                    <hr class="my-3">
+                    <div class="mb-3">
+                      <h6 class="text-success fw-semibold mb-2">🙏 Prière</h6>
+                      <p class="text-secondary lh-lg">${prayer}</p>
+                    </div>
                   ` : ""}
 
                   ${citation ? `
-                    <div class="mt-3 text-primary">
+                    <div class="mt-3 text-primary text-center">
                       <em>💬 "${citation}"</em>
                     </div>
                   ` : ""}
+
                 </div>
               </div>
             </section>
