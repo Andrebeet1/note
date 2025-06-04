@@ -2,21 +2,17 @@ $(document).ready(function () {
   let currentIndex = 0;
   let totalNotes = 0;
 
-  // Fonction d'échappement HTML (sécurité XSS)
-  function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, match => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;',
-    }[match]));
+  // Fonction d'échappement HTML sécurisée (XSS safe)
+  function sanitizeHtml(text) {
+    return $('<div>').text(text).html();
   }
 
-  // Mise à jour de la navigation (affichage de la note active et boutons)
+  // Mise à jour de la navigation et affichage de la note active
   function updateNavigation() {
-    $("#supportNotes section").removeClass("active animate__fadeIn");
-    const currentSection = $("#supportNotes section").eq(currentIndex);
+    const sections = $("#supportNotes section");
+    sections.removeClass("active animate__fadeIn");
+
+    const currentSection = sections.eq(currentIndex);
     currentSection.addClass("active animate__fadeIn");
 
     $("#pageIndicator").html(
@@ -27,11 +23,26 @@ $(document).ready(function () {
     $("#nextBtn").prop("disabled", currentIndex >= totalNotes - 1);
   }
 
-  // Chargement et affichage des notes depuis l'API
+  // Affiche un loader pendant le chargement des notes
+  function showLoading(show) {
+    if (show) {
+      $("#supportNotes").html(`
+        <div class="d-flex justify-content-center align-items-center py-5">
+          <div class="spinner-border text-danger" role="status" aria-label="Chargement en cours">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+      `);
+    }
+  }
+
+  // Chargement des notes depuis l'API et rendu HTML
   function loadNotes() {
     $("#generateBtn")
       .prop("disabled", true)
       .html('<span class="spinner-border spinner-border-sm me-2"></span>Chargement...');
+
+    showLoading(true);
 
     $.get("/api/notes")
       .done(function (data) {
@@ -41,36 +52,39 @@ $(document).ready(function () {
         totalNotes = notes.length;
         currentIndex = 0;
 
+        if (totalNotes === 0) {
+          $("#supportNotes").html(`<div class="alert alert-warning">Aucune note trouvée.</div>`);
+          $("#pageIndicator").empty();
+          return;
+        }
+
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          // 🌿 Titre de la note
-          const titleLine = escapeHtml(lines[0] || "🌿 Note");
+          // Extraction et nettoyage
+          const titleLine = sanitizeHtml(lines[0] || "🌿 Note");
 
-          // 📖 Verset du jour
           const verseLineIndex = lines.findIndex(l => l.includes("📖"));
           const verseTextLine = lines[verseLineIndex + 1] || "";
-          const [verseText, verseRef] = verseTextLine.split("—").map(part => escapeHtml(part?.trim() || ""));
+          const [verseText, verseRef] = verseTextLine.split("—").map(part => sanitizeHtml(part?.trim() || ""));
 
-          // 🙏 Prière
           const prayerIndex = lines.findIndex(l => l.startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.startsWith("💬"));
 
           const prayerLines = (prayerIndex >= 0 && citationIndex > prayerIndex)
             ? lines.slice(prayerIndex, citationIndex)
             : lines.slice(prayerIndex);
-          const prayerText = escapeHtml(
+          const prayerText = sanitizeHtml(
             prayerLines.join(" ").replace(/^🙏\s*Prière\s*:\s*/i, "").trim()
           );
 
-          // 💬 Citation
           const citationLines = citationIndex >= 0 ? lines.slice(citationIndex) : [];
-          const citationText = escapeHtml(
+          const citationText = sanitizeHtml(
             citationLines.join(" ").replace(/^💬\s*Citation\s*:\s*/i, "").trim()
           );
 
           return `
-            <section class="${i === 0 ? "active animate__fadeIn" : ""}">
+            <section class="${i === 0 ? "active animate__fadeIn" : ""}" aria-hidden="${i !== 0}">
               <div class="container py-4">
                 <div class="card shadow rounded-4">
                   <div class="card-body">
@@ -113,13 +127,14 @@ $(document).ready(function () {
         $("#supportNotes").html(
           `<div class="alert alert-danger">⚠️ Impossible de charger les notes. Vérifiez votre connexion ou réessayez plus tard.</div>`
         );
+        $("#pageIndicator").empty();
       })
       .always(function () {
         $("#generateBtn").prop("disabled", false).html("🔄 Régénérer les notes");
       });
   }
 
-  // Navigation entre les notes
+  // Gestion des boutons de navigation
   $("#prevBtn").click(() => {
     if (currentIndex > 0) {
       currentIndex--;
@@ -134,9 +149,9 @@ $(document).ready(function () {
     }
   });
 
-  // Génération des notes
+  // Bouton régénérer (rechargement des notes)
   $("#generateBtn").click(() => loadNotes());
 
-  // Chargement initial des notes
+  // Chargement initial
   loadNotes();
 });
