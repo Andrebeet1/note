@@ -65,40 +65,42 @@ $(document).ready(function () {
 
           return `
             <section class="${i === 0 ? "active animate__fadeIn" : ""}">
-              <div class="card shadow border-0 mb-4 animate__animated animate__fadeInUp" style="border-radius: 1rem;">
-                <div class="card-body px-4 py-4">
+              <div class="container py-4">
+                <div class="card shadow rounded-4">
+                  <div class="card-body">
+                    <h2 class="card-title text-center text-primary mb-4">🌿 Note Spirituelle du Jour</h2>
 
-                  <h5 class="text-success fw-bold mb-3">
-                    ${theme}
-                  </h5>
+                    <h5 class="text-secondary">${theme.replace("🌿", "").trim()}</h5>
+                    <hr>
 
-                  <div class="mb-3">
-                    <div class="text-muted small fw-semibold mb-1">${verseLabel}</div>
+                    <h6 class="text-muted">📖 Verset du jour :</h6>
                     <blockquote class="blockquote ps-3 border-start border-3 border-success">
-                      <p class="mb-0 fst-italic">"${verse}"</p>
+                      <p class="mb-0 fst-italic">« ${verse} »</p>
+                      <footer class="blockquote-footer mt-1">${verseLabel.replace("📖", "").trim()}</footer>
                     </blockquote>
-                  </div>
 
-                  ${meditation ? `
-                    <div class="mb-3">
-                      <h6 class="text-dark fw-semibold mb-2">🕊️ Méditation</h6>
+                    ${meditation ? `
+                      <hr>
+                      <h6 class="text-muted">🕊️ Méditation :</h6>
                       <p class="lh-lg text-dark">${meditation}</p>
-                    </div>
-                  ` : ""}
+                    ` : ""}
 
-                  ${prayer ? `
-                    <div class="mb-3">
-                      <h6 class="text-success fw-semibold mb-2">🙏 Prière</h6>
+                    ${prayer ? `
+                      <hr>
+                      <h6 class="text-muted">🙏 Prière :</h6>
                       <p class="text-secondary lh-lg">${prayer}</p>
-                    </div>
-                  ` : ""}
+                    ` : ""}
 
-                  ${citation ? `
-                    <div class="mt-3 text-primary text-center">
-                      <em>💬 "${citation}"</em>
-                    </div>
-                  ` : ""}
+                    ${citation ? `
+                      <hr>
+                      <h6 class="text-muted">💬 Citation Inspirante :</h6>
+                      <blockquote class="blockquote text-center">
+                        <p class="mb-0"><em>"${citation}"</em></p>
+                        <footer class="blockquote-footer mt-1">Inconnu</footer>
+                      </blockquote>
+                    ` : ""}
 
+                  </div>
                 </div>
               </div>
             </section>
@@ -132,5 +134,6 @@ $(document).ready(function () {
 
   $("#generateBtn").click(() => loadNotes());
 
-  loadNotes(); // Chargement initial
+  loadNotes(); // Initial
 });
+
