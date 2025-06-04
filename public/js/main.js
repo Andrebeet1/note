@@ -47,7 +47,6 @@ $(document).ready(function () {
     $.get("/api/notes")
       .done(function (data) {
         const raw = data.content || data;
-        // Séparer par double saut de ligne (au moins 2), filtre pour notes commençant par 🌿
         const notes = raw.split(/\n{2,}/).filter(n => n.trim().startsWith("🌿"));
 
         totalNotes = notes.length;
@@ -62,21 +61,17 @@ $(document).ready(function () {
         const html = notes.map((note, i) => {
           const lines = note.trim().split("\n").filter(Boolean);
 
-          // Titre, exemple : "🌿 1. Verset + Prière : Espoir"
           const titleLine = sanitizeHtml(lines[0] || "🌿 Note");
 
-          // Trouve ligne contenant "📖", extrait verset et référence
           const verseLineIndex = lines.findIndex(l => l.includes("📖"));
           const verseTextLine = lines[verseLineIndex + 1] || "";
           const [verseTextRaw, verseRefRaw] = verseTextLine.split("—");
           const verseText = sanitizeHtml(verseTextRaw?.trim() || "");
           const verseRef = sanitizeHtml(verseRefRaw?.trim() || "");
 
-          // Indexs des sections prière et citation
           const prayerIndex = lines.findIndex(l => l.startsWith("🙏"));
           const citationIndex = lines.findIndex(l => l.startsWith("💬"));
 
-          // Extraire prière entre prière et citation, ou fin si citation absente
           const prayerLines = (prayerIndex >= 0 && citationIndex > prayerIndex)
             ? lines.slice(prayerIndex, citationIndex)
             : lines.slice(prayerIndex);
@@ -88,7 +83,6 @@ $(document).ready(function () {
             prayerText = sanitizeHtml(prayerText);
           }
 
-          // Citation
           const citationLines = citationIndex >= 0 ? lines.slice(citationIndex) : [];
           let citationText = "";
           if (citationLines.length > 0) {
@@ -99,7 +93,7 @@ $(document).ready(function () {
           }
 
           return `
-            <section class="${i === 0 ? "active animate__fadeIn" : ""}" aria-hidden="${i !== 0}">
+            <section class="${i === 0 ? "active animate__fadeIn" : ""}" aria-hidden="${i !== 0}" role="region" aria-label="Note spirituelle ${i + 1}">
               <div class="container py-4">
                 <div class="card shadow rounded-4">
                   <div class="card-body">
