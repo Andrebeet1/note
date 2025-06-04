@@ -26,6 +26,10 @@ Merci de suivre ces instructions à la lettre.
 `;
 
 async function generateNotes() {
+  if (!process.env.COHERE_API_KEY) {
+    throw new Error("❌ Clé API Cohere manquante dans le fichier .env.");
+  }
+
   try {
     const response = await axios.post(
       'https://api.cohere.ai/v1/chat',
@@ -44,14 +48,15 @@ async function generateNotes() {
       }
     );
 
-    const messageContent = response?.data?.text;
-    if (messageContent) {
+    const messageContent = response?.data?.generations?.[0]?.text;
+
+    if (messageContent && typeof messageContent === "string" && messageContent.trim() !== "") {
       return messageContent.trim();
     } else {
       return "Réponse vide ou inattendue de l'API.";
     }
   } catch (error) {
-    console.error("Erreur Cohere:", error.response?.data || error.message);
+    console.error("❌ Erreur Cohere:", error.response?.data || error.message);
     return `Erreur API : ${JSON.stringify(error.response?.data || error.message)}`;
   }
 }
