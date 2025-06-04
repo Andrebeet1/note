@@ -34,9 +34,10 @@ async function fetchBatch(start, end) {
       {
         model: "command-r-plus",
         temperature: 0.9,
-        max_tokens: 4096,
-        chat_history: [],
-        message: prompt,
+        max_tokens: 1024,           // Réduit pour éviter dépassement
+        messages: [
+          { role: "user", content: prompt }
+        ],
       },
       {
         headers: {
@@ -46,7 +47,9 @@ async function fetchBatch(start, end) {
       }
     );
 
-    const messageContent = response?.data?.generations?.[0]?.text;
+    // Accès à la réponse corrigée
+    const messageContent = response?.data?.generations?.[0]?.text 
+      || response?.data?.choices?.[0]?.message?.content;
 
     if (messageContent && typeof messageContent === "string" && messageContent.trim() !== "") {
       return messageContent.trim();
